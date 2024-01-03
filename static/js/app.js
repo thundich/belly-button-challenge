@@ -13,12 +13,51 @@ function init() {
       data.names.forEach((id) => {
         dropDown.append("option").text(id).property("value", id)
       })
+
+      barChart(data.names[0], data)
     }
   )
 }
 
 function barChart(sample_name, data) {
+    // Retrieve all sample data
+    let samples = data.samples;
 
+    // Find the sample with the correct sample_name
+    let sample = samples.find(item => item.id == sample_name);
+
+    // Get the otu_ids, otu_lables, and sample_values
+    let otu_ids = sample.otu_ids;
+    let otu_labels = sample.otu_labels;
+    let sample_values = sample.sample_values;
+
+    // Set top ten items to display in descending order
+    let yticks = otu_ids.slice(0,10).map(id => `OTU ${id}`).reverse();
+    let xticks = sample_values.slice(0,10).reverse();
+    let labels = otu_labels.slice(0,10).reverse();
+
+    // Set up the trace for the bar chart
+    let trace = {
+        x: xticks,
+        y: yticks,
+        text: labels,
+        type: "bar",
+        orientation: "h"
+        };
+
+    // Setup the layout
+    let layout = {
+        title: "Top 10 OTUs Present"
+        };
+
+    // Call Plotly to plot the bar chart
+    Plotly.newPlot("bar", [trace], layout)
+
+}
+
+function optionChanged(value) { 
+    // Call all functions 
+    barChart(value, sample_data);
 }
 
 // Call the initialize function
