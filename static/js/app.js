@@ -15,6 +15,7 @@ function init() {
       })
 
       barChart(data.names[0], data)
+      bubbleChart(data.names[0], data)
     }
   )
 }
@@ -58,6 +59,43 @@ function barChart(sample_name, data) {
 function optionChanged(value) { 
     // Call all functions 
     barChart(value, sample_data);
+    bubbleChart(value, sample_data)
+}
+
+function bubbleChart(sample_name, data) { 
+    // Retrieve all sample data
+    let samples = data.samples;
+
+    // Find the sample with the correct sample_name
+    let sample = samples.find(item => item.id == sample_name);
+
+    // Get the otu_ids, otu_lables, and sample_values
+    let otu_ids = sample.otu_ids;
+    let otu_labels = sample.otu_labels;
+    let sample_values = sample.sample_values;
+
+    // Set up the trace for the bubble chart
+    let trace = {
+        x: otu_ids,
+        y: sample_values,
+        text: otu_labels,
+        mode: "markers", 
+        marker: {
+            size: sample_values,
+            color: otu_ids, 
+            colorscale: 'YlGnBu'
+        }
+    
+        };
+    // Set up the layout
+    let layout = {
+        title: "Bacteria Per Sample",
+        hovermode: "closest",
+        xaxis: {title: "OTU ID"},
+        };
+
+    // Call Plotly to plot the bubble chart
+    Plotly.newPlot("bubble", [trace], layout)
 }
 
 // Call the initialize function
